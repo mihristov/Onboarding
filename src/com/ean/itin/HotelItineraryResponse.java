@@ -6,6 +6,7 @@ import com.ean.entities.Itinerary;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Created by Milen on 5/16/2016.
@@ -31,5 +32,11 @@ public class HotelItineraryResponse extends CommonResponse {
         return "HotelItineraryResponse: " +
                 "Itinerary=" + Arrays.toString(itinerary) +
                 '}';
+    }
+
+    public static void main(String[] args) {
+        Optional<Integer> asd = null;
+        asd = Optional.ofNullable(null);
+        System.out.println(asd.orElse(1));
     }
 }

@@ -337,11 +337,11 @@ public class HotelSummary {
 
     @Override
     public String toString() {
+        Double averageRate = roomRateDetailsList.getRoomRateDetails()[0].getRateInfos().getRateInfo()[0].getChargeableRateInfo()
+                .getAverageRate();
+
         return name + "\nAddress: " + address1 + "\n" + locationDescription + "\nHotel ID: " + hotelId + "\nAverage nightly price: " +
-                roomRateDetailsList.getRoomRateDetails()[0].getRateInfos().getRateInfo()[0].getChargeableRateInfo().getAverageBaseRate() +
-                " " + rateCurrencyCode + "\nHotel Rating:"
-                + " " +
-                hotelRating +
+                averageRate + " " + rateCurrencyCode + "\nHotel Rating:" + " " + hotelRating +
                 "\n####################################################################\n\n";
     }
 }

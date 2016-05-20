@@ -1,5 +1,9 @@
 package com.ean.main;
 
+import com.ean.clients.HotelAvailClientResponse;
+import com.ean.clients.HotelItinClientResponse;
+import com.ean.clients.HotelListClientResponse;
+import com.ean.clients.HotelReservationClientResponse;
 import com.ean.entities.AddressInfo;
 import com.ean.entities.HotelRoomResponse;
 import com.ean.entities.ReservationInfo;
@@ -18,7 +22,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -27,12 +34,12 @@ import java.util.Scanner;
 public class MainDemo {
     private static final String DATE_FORMAT = "MM/dd/yyyy";
     private static final DateTimeFormatter dtf = DateTimeFormat.forPattern(DATE_FORMAT);
-    private final static Scanner in = new Scanner(System.in);
+    private static final Scanner in = new Scanner(System.in);
 
     private static String destination = null;
     private static Integer rooms = 1;
-    private static Integer adults = 2;
-    private static Integer children = 0;
+    private static List<Integer> adults = new ArrayList<>(Arrays.asList(2));
+    private static List<Integer> children = new ArrayList<>(Arrays.asList(0));
     private static DateTime checkIn = new DateTime();
     private static DateTime checkOut = new DateTime();
 
@@ -46,7 +53,7 @@ public class MainDemo {
 
         System.out.println("Please enter hotel ID: ");
         while (hlResponse.getMoreResultsAvailable()) {
-            System.out.println("Press M to show next page with hotels: ");
+            System.out.print("Press M to show next page with hotels: ");
             input = in.nextLine();
             if (input.trim().toUpperCase().equals("M")) {
                 hlRequest = new HotelListRequest();
@@ -68,9 +75,13 @@ public class MainDemo {
         System.out.print("Select number of room to proceed: ");
         Integer roomInput = in.nextInt();
         HotelRoomResponse hotelRoom = hraResponse.getHotelRoomResponse()[roomInput - 1];
-
+        Optional<Integer> bedInput = Optional.empty();
+        if (hotelRoom.getBedTypes().getBedType().length > 1) {
+            System.out.print("Select number of bed type to proceed: ");
+            bedInput = Optional.of(in.nextInt());
+        }
+        HotelRoomReservationRequest reservationRequest = populateHotelReservationRequest(availRequest, hotelRoom, bedInput);
         System.out.println("Reservation in progress...");
-        HotelRoomReservationRequest reservationRequest = populateHotelReservationRequest(availRequest, hotelRoom);
         HotelRoomReservationResponse reservationResponse = HotelReservationClientResponse
                 .getHotelAvailResponse(reservationRequest, hlResponse.getCustomerSessionId());
 
@@ -96,27 +107,38 @@ public class MainDemo {
     }
 
     private static HotelRoomReservationRequest populateHotelReservationRequest(HotelRoomAvailabilityRequest availRequest,
-            HotelRoomResponse hotelRoom) {
-        HotelRoomReservationRequest preq = new HotelRoomReservationRequest();
-        preq.setHotelId(availRequest.getHotelId());
-        preq.setArrivalDate(dtf.print(checkIn));
-        preq.setDepartureDate(dtf.print(checkOut));
-        preq.setSupplierType(hotelRoom.getSupplierType());
-        preq.setRateKey(hotelRoom.getRateInfos().getRateInfo()[0].getRoomGroup().getRoom()[0].getRateKey());
-        preq.setRoomTypeCode(hotelRoom.getRoomTypeCode());
-        preq.setRateCode(hotelRoom.getRateCode());
-        preq.setChargeableRate(hotelRoom.getRateInfos().getRateInfo()[0].getChargeableRateInfo().getTotal());
+            HotelRoomResponse hotelRoom, Optional<Integer> bedInput) {
+        HotelRoomReservationRequest request = new HotelRoomReservationRequest();
+        request.setHotelId(availRequest.getHotelId());
+        request.setArrivalDate(dtf.print(checkIn));
+        request.setDepartureDate(dtf.print(checkOut));
+        request.setSupplierType(hotelRoom.getSupplierType());
+        request.setRateKey(hotelRoom.getRateInfos().getRateInfo()[0].getRoomGroup().getRoom()[0].getRateKey());
+        request.setRoomTypeCode(hotelRoom.getRoomTypeCode());
+        request.setRateCode(hotelRoom.getRateCode());
+        request.setChargeableRate(hotelRoom.getRateInfos().getRateInfo()[0].getChargeableRateInfo().getTotal());
         RoomGroup rg = new RoomGroup();
-        Room room = new Room();
-        rg.setRoom(new Room[] {room});
-        room.setNumberOfAdults(adults);
-        room.setFirstName("test");
-        room.setLastName("tester");
-        room.setBedTypeId(hotelRoom.getBedTypes()[0].getBedType()[0].getId());
-        String[] smokingPreferences = hotelRoom.getSmokingPreferences().split("[,]");
-        room.setSmokingPreference(SmokingPreference.valueOf(smokingPreferences[0]));
-
-        preq.setRoomGroup(rg);
+        Room[] roomsArr = new Room[rooms];
+        for (int i = 0; i < rooms; i++) {
+            roomsArr[i] = new Room();
+            roomsArr[i].setNumberOfChildren(children.get(i));
+            roomsArr[i].setNumberOfAdults(adults.get(i));
+            roomsArr[i].setFirstName("test");
+            roomsArr[i].setLastName("tester");
+            roomsArr[i].setBedTypeId(hotelRoom.getBedTypes().getBedType()[bedInput.orElse(1) - 1].getId());
+            String[] smokingPreferences = null;
+            Optional<Integer> smokingInput = Optional.empty();
+            if (hotelRoom.getSmokingPreferences() != null && !hotelRoom.getSmokingPreferences().isEmpty()) {
+                smokingPreferences = hotelRoom.getSmokingPreferences().split("[,]");
+                if (smokingPreferences.length > 1) {
+                    System.out.print("Please choose your smoking preference: ");
+                    smokingInput.of(in.nextInt());
+                }
+            }
+            roomsArr[i].setSmokingPreference(SmokingPreference.valueOf(smokingPreferences[smokingInput.orElse(1) - 1]));
+        }
+        rg.setRoom(roomsArr);
+        request.setRoomGroup(rg);
         ReservationInfo ri = new ReservationInfo();
         ri.setEmail("test@travelnow.com");
         ri.setFirstName("test");
@@ -129,7 +151,7 @@ public class MainDemo {
         ri.setCreditCardExpirationMonth("11");
         ri.setCreditCardExpirationYear("2018");
 
-        preq.setReservationInfo(ri);
+        request.setReservationInfo(ri);
 
         AddressInfo ai = new AddressInfo();
         ai.setAddress1("travelnow");
@@ -137,8 +159,8 @@ public class MainDemo {
         ai.setStateProvinceCode("WA");
         ai.setCountryCode("US");
         ai.setPostalCode("98004");
-        preq.setAddressInfo(ai);
-        return preq;
+        request.setAddressInfo(ai);
+        return request;
     }
 
     private static HotelRoomAvailabilityRequest populateHotelAvailRequest(String input) {
@@ -185,10 +207,10 @@ public class MainDemo {
             for (Integer i = 1; i <= rooms; i++) {
                 System.out.print("Please enter adults for room " + i + ": ");
                 input = in.nextLine();
-                adults = Integer.valueOf(input);
+                adults.add(Integer.valueOf(input));
                 System.out.print("Please enter children for room " + i + ": ");
                 input = in.nextLine();
-                children = Integer.valueOf(input);
+                children.add(Integer.valueOf(input));
             }
         }
     }
@@ -207,8 +229,8 @@ public class MainDemo {
         Room[] roomsGroup = new Room[rooms];
         for (int i = 0; i < rooms; i++) {
             roomsGroup[i] = new Room();
-            roomsGroup[i].setNumberOfAdults(adults);
-            roomsGroup[i].setNumberOfChildren(children);
+            roomsGroup[i].setNumberOfAdults(adults.get(i));
+            roomsGroup[i].setNumberOfChildren(children.get(i));
         }
         roomGroup.setRoom(roomsGroup);
         return roomGroup;

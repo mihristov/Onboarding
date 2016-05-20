@@ -1,4 +1,4 @@
-package com.ean.main;
+package com.ean.clients;
 
 import com.ean.res.HotelRoomReservationRequest;
 import com.ean.res.HotelRoomReservationResponse;

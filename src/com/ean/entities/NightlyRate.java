@@ -12,8 +12,8 @@ public class NightlyRate {
      * Attributes
      */
     private Boolean promo;
-    private String rate;
-    private String baseRate;
+    private Double rate;
+    private Double baseRate;
 
     public NightlyRate() {
     }
@@ -27,21 +27,21 @@ public class NightlyRate {
         this.promo = promo;
     }
 
-    public String getRate() {
+    public Double getRate() {
         return rate;
     }
 
     @XmlAttribute
-    public void setRate(String rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 
-    public String getBaseRate() {
+    public Double getBaseRate() {
         return baseRate;
     }
 
     @XmlAttribute
-    public void setBaseRate(String baseRate) {
+    public void setBaseRate(Double baseRate) {
         this.baseRate = baseRate;
     }
 

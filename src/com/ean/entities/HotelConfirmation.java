@@ -313,7 +313,7 @@ public class HotelConfirmation {
     @Override
     public String toString() {
         return "HotelConfirmation: \nArrival Date: " + arrivalDate + "\nDeparture Date: " + departureDate + "\nConfirmation Number: "
-                + confirmationNumber + "\nNightly price: " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getAverageBaseRate() +
+                + confirmationNumber + "\nNightly price: " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getAverageRate() +
                 "\nNumber of adults: " + numberOfAdults + "\nNumber of children: " + numberOfChildren + "\n" + hotel;
     }
 }

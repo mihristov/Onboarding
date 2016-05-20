@@ -1,4 +1,4 @@
-package com.ean.main;
+package com.ean.clients;
 
 import com.ean.itin.HotelItineraryRequest;
 import com.ean.itin.HotelItineraryResponse;

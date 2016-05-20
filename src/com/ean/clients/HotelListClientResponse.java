@@ -1,7 +1,7 @@
-package com.ean.main;
+package com.ean.clients;
 
-import com.ean.roomavail.HotelRoomAvailabilityRequest;
-import com.ean.roomavail.HotelRoomAvailabilityResponse;
+import com.ean.hotellist.HotelListRequest;
+import com.ean.hotellist.HotelListResponse;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,14 +15,13 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
 /**
- * Created by Milen on 5/17/2016.
+ * Created by Milen on 5/19/2016.
  */
-public class HotelAvailClientResponse {
-    public static HotelRoomAvailabilityResponse getHotelAvailResponse(HotelRoomAvailabilityRequest request, String customerSessionId) {
+public class HotelListClientResponse {
+    public static HotelListResponse getHotelListResponse(HotelListRequest request) {
         final Client client = ClientBuilder.newClient();
-        WebTarget resource = client.target("http://apiv3.staging.ean/ean-services/rs/hotel/v3/avail?");
+        WebTarget resource = client.target("http://apiv3.staging.ean/ean-services/rs/hotel/v3/list?");
 
-        resource = resource.queryParam("customerSessionId", customerSessionId);
         resource = resource.queryParam("cid", "401037");
         resource = resource.queryParam("apiKey", "cbrzfta369qwyrm9t5b8y8kf");
         resource = resource.queryParam("locale", "en_US");
@@ -31,7 +30,7 @@ public class HotelAvailClientResponse {
 
         JAXBContext jaxbContext = null;
         try {
-            jaxbContext = JAXBContext.newInstance(HotelRoomAvailabilityRequest.class);
+            jaxbContext = JAXBContext.newInstance(HotelListRequest.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             StringWriter sw = new StringWriter();
 
@@ -46,7 +45,7 @@ public class HotelAvailClientResponse {
         Invocation.Builder builder = resource.request();
         Response response = resource.request(MediaType.APPLICATION_XML_TYPE).get();
 
-        HotelRoomAvailabilityResponse availResponse = response.readEntity(HotelRoomAvailabilityResponse.class);
-        return availResponse;
+        HotelListResponse listResponse = response.readEntity(HotelListResponse.class);
+        return listResponse;
     }
 }

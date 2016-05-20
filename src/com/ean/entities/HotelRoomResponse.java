@@ -40,8 +40,8 @@ public class HotelRoomResponse {
     private Integer quotedOccupancy;
     private Integer rateOccupancyPerRoom;
     private String deepLink;
-    private BedTypes[] bedTypes;
-    private ValueAdds[] valueAdds;
+    private BedTypes bedTypes;
+    private ValueAdds valueAdds;
     private RoomImages[] roomImages;
     private RoomType roomType;
     private RateInfos rateInfos;
@@ -49,12 +49,12 @@ public class HotelRoomResponse {
     public HotelRoomResponse() {
     }
 
-    public BedTypes[] getBedTypes() {
+    public BedTypes getBedTypes() {
         return bedTypes;
     }
 
     @XmlElement(name = "BedTypes")
-    public void setBedTypes(BedTypes[] bedTypes) {
+    public void setBedTypes(BedTypes bedTypes) {
         this.bedTypes = bedTypes;
     }
 
@@ -193,12 +193,12 @@ public class HotelRoomResponse {
         this.supplierType = supplierType;
     }
 
-    public ValueAdds[] getValueAdds() {
+    public ValueAdds getValueAdds() {
         return valueAdds;
     }
 
     @XmlElement(name = "ValueAdds")
-    public void setValueAdds(ValueAdds[] valueAdds) {
+    public void setValueAdds(ValueAdds valueAdds) {
         this.valueAdds = valueAdds;
     }
 
@@ -215,22 +215,24 @@ public class HotelRoomResponse {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (valueAdds != null) {
-            for (ValueAdds vas : valueAdds) {
-                for (ValueAdd va : vas.getValueAdd()) {
-                    sb.append("Value add: ");
-                    sb.append(va.getDescription() + "\n");
-                }
+            for (ValueAdd va : valueAdds.getValueAdd()) {
+                sb.append("Value add: ");
+                sb.append(va.getDescription() + "\n");
             }
         }
         if (rateInfos.getRateInfo()[0].getNonRefundable()) {
             sb.append("Non Refundable\n");
         }
-        sb.append("Nightly price: " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getAverageBaseRate());
+        sb.append("Nightly price: " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getAverageRate());
         sb.append(" " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getCurrencyCode() + "\nBed types:\n");
-        for (BedTypes beds : bedTypes) {
-            for (BedType bed : beds.getBedType()) {
-                sb.append(bed.getDescription() + "\n");
-            }
+
+        for (int i = 0; i < bedTypes.getBedType().length; i++) {
+            sb.append((i + 1) + ") " + bedTypes.getBedType()[i].getDescription() + "\n");
+        }
+        sb.append("Smoking preferences:\n");
+        String[] smokingPrefs = smokingPreferences.split("[,]");
+        for (int i = 0; i < smokingPrefs.length; i++) {
+            sb.append((i+1) + ") " + SmokingPreference.valueOf(smokingPrefs[i]).getValue() + "\n");
         }
         return roomTypeDescription + "\n" + sb.toString() + "\n";
     }

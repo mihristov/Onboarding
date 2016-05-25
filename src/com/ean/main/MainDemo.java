@@ -46,6 +46,7 @@ public class MainDemo {
     public static void main(String[] args) {
         String input = null;
 
+        /** Hotel List */
         askForInput();
         HotelListRequest hlRequest = populateHotelListRequest();
         HotelListResponse hlResponse = HotelListClientResponse.getHotelListResponse(hlRequest);
@@ -67,11 +68,35 @@ public class MainDemo {
                 break;
             }
         }
+
+        /** Hotel Availability */
         HotelRoomAvailabilityRequest availRequest = populateHotelAvailRequest(input);
         HotelRoomAvailabilityResponse hraResponse = HotelAvailClientResponse
                 .getHotelAvailResponse(availRequest, hlResponse.getCustomerSessionId());
         System.out.println(hraResponse);
 
+        /** Hotel Reservation */
+        HotelRoomReservationResponse reservationResponse = hotelReservation(hlResponse, availRequest, hraResponse);
+
+        /** Itinerary request */
+        itineraryRequest(hlResponse, reservationResponse);
+
+        in.close();
+    }
+
+    private static void itineraryRequest(HotelListResponse hlResponse, HotelRoomReservationResponse reservationResponse) {
+        System.out.println("Itinerary request pending...");
+        HotelItineraryRequest itineraryRequest = new HotelItineraryRequest();
+        itineraryRequest.setItineraryId(reservationResponse.getItineraryId());
+        itineraryRequest.setEmail("test@travelnow.com");
+
+        HotelItineraryResponse itinResponse = HotelItinClientResponse
+                .getHotelListResponse(itineraryRequest, hlResponse.getCustomerSessionId());
+        System.out.println(itinResponse.toString());
+    }
+
+    private static HotelRoomReservationResponse hotelReservation(HotelListResponse hlResponse, HotelRoomAvailabilityRequest availRequest,
+            HotelRoomAvailabilityResponse hraResponse) {
         System.out.print("Select number of room to proceed: ");
         Integer roomInput = in.nextInt();
         HotelRoomResponse hotelRoom = hraResponse.getHotelRoomResponse()[roomInput - 1];
@@ -94,16 +119,7 @@ public class MainDemo {
         }
 
         System.out.println();
-        System.out.println("Itinerary request pending...");
-        HotelItineraryRequest itineraryRequest = new HotelItineraryRequest();
-        itineraryRequest.setItineraryId(reservationResponse.getItineraryId());
-        itineraryRequest.setEmail("test@travelnow.com");
-
-        HotelItineraryResponse itinResponse = HotelItinClientResponse
-                .getHotelListResponse(itineraryRequest, hlResponse.getCustomerSessionId());
-        System.out.println(itinResponse.toString());
-
-        in.close();
+        return reservationResponse;
     }
 
     private static HotelRoomReservationRequest populateHotelReservationRequest(HotelRoomAvailabilityRequest availRequest,

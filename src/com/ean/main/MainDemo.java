@@ -53,9 +53,11 @@ public class MainDemo {
         System.out.println(hlResponse);
 
         System.out.println("Please enter hotel ID: ");
-        while (hlResponse.getMoreResultsAvailable()) {
+        if (hlResponse.getMoreResultsAvailable()) {
             System.out.print("Press M to show next page with hotels: ");
-            input = in.nextLine();
+        }
+        input = in.nextLine();
+        while (hlResponse.getMoreResultsAvailable()) {
             if (input.trim().toUpperCase().equals("M")) {
                 hlRequest = new HotelListRequest();
                 hlRequest.setCustomerSessionId(hlResponse.getCustomerSessionId());
@@ -64,12 +66,14 @@ public class MainDemo {
                 hlRequest.setCacheLocation(hlResponse.getCacheLocation());
                 hlResponse = HotelListClientResponse.getHotelListResponse(hlRequest);
                 System.out.println(hlResponse);
+                System.out.print("Please enter hotel ID or M to show next page with hotels: ");
+                input = in.nextLine();
             } else {
                 break;
             }
         }
 
-        /** Hotel Availability */
+        /** Room Availability */
         HotelRoomAvailabilityRequest availRequest = populateHotelAvailRequest(input);
         HotelRoomAvailabilityResponse hraResponse = HotelAvailClientResponse
                 .getHotelAvailResponse(availRequest, hlResponse.getCustomerSessionId());

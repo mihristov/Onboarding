@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EAN Onboarding.iml" filepath="$PROJECT_DIR$/EAN Onboarding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EAN Onboarding.iml" filepath="$PROJECT_DIR$/.idea/modules/EAN Onboarding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EAN_Onboarding_main.iml" filepath="$PROJECT_DIR$/.idea/modules/EAN_Onboarding_main.iml" group="EAN Onboarding" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EAN_Onboarding_test.iml" filepath="$PROJECT_DIR$/.idea/modules/EAN_Onboarding_test.iml" group="EAN Onboarding" />
     </modules>
   </component>
 </project>

@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlEnum;
 public enum SmokingPreference {
     S("Smoking"),
     NS("Non-smoking"),
+    N("Non-smoking"),
     E("Smoking & Non-smoking");
 
     private String value;

@@ -5,8 +5,6 @@ import com.ean.entities.Itinerary;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * Created by Milen on 5/16/2016.
@@ -29,14 +27,11 @@ public class HotelItineraryResponse extends CommonResponse {
 
     @Override
     public String toString() {
-        return "HotelItineraryResponse: " +
-                "Itinerary=" + Arrays.toString(itinerary) +
-                '}';
-    }
-
-    public static void main(String[] args) {
-        Optional<Integer> asd = null;
-        asd = Optional.ofNullable(null);
-        System.out.println(asd.orElse(1));
+        StringBuilder sb = new StringBuilder();
+        sb.append("HotelItineraryResponse: \n\n");
+        for (Itinerary itin : itinerary) {
+            sb.append(itin.toString() + "\n####################");
+        }
+        return sb.toString();
     }
 }

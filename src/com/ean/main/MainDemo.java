@@ -132,7 +132,7 @@ public class MainDemo {
                 smokingPreferences = hotelRoom.getSmokingPreferences().split("[,]");
                 if (smokingPreferences.length > 1) {
                     System.out.print("Please choose your smoking preference: ");
-                    smokingInput.of(in.nextInt());
+                    smokingInput = Optional.of(in.nextInt());
                 }
             }
             roomsArr[i].setSmokingPreference(SmokingPreference.valueOf(smokingPreferences[smokingInput.orElse(1) - 1]));

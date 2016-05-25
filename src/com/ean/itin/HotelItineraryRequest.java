@@ -6,6 +6,8 @@ import com.ean.entities.ItineraryQuery;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * Created by Milen on 5/16/2016.

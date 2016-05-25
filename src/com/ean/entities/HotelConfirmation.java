@@ -46,7 +46,7 @@ public class HotelConfirmation {
     private Integer numberOfAdults;
     private String numberOfChildren;
     private String affiliateConfirmationId;
-    private String smokingPreference;
+    private SmokingPreference smokingPreference;
     private String supplierPropertyId;
     private String roomType;
     private String rateType;
@@ -247,12 +247,12 @@ public class HotelConfirmation {
         this.roomType = roomType;
     }
 
-    public String getSmokingPreference() {
+    public SmokingPreference getSmokingPreference() {
         return smokingPreference;
     }
 
     @XmlElement
-    public void setSmokingPreference(String smokingPreference) {
+    public void setSmokingPreference(SmokingPreference smokingPreference) {
         this.smokingPreference = smokingPreference;
     }
 
@@ -313,7 +313,8 @@ public class HotelConfirmation {
     @Override
     public String toString() {
         return "HotelConfirmation: \nArrival Date: " + arrivalDate + "\nDeparture Date: " + departureDate + "\nConfirmation Number: "
-                + confirmationNumber + "\nNightly price: " + rateInfos.getRateInfo()[0].getChargeableRateInfo().getAverageRate() +
+                + confirmationNumber + "\nSmoking preferences: " + smokingPreference.getValue() + "\nNightly price: " + rateInfos.getRateInfo()[0]
+                .getChargeableRateInfo().getAverageRate() +
                 "\nNumber of adults: " + numberOfAdults + "\nNumber of children: " + numberOfChildren + "\n" + hotel;
     }
 }

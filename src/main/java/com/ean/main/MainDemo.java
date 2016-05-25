@@ -151,7 +151,7 @@ public class MainDemo {
             if (hotelRoom.getSmokingPreferences() != null && !hotelRoom.getSmokingPreferences().isEmpty()) {
                 smokingPreferences = hotelRoom.getSmokingPreferences().split("[,]");
                 if (smokingPreferences.length > 1) {
-                    System.out.print("Please choose your smoking preference: ");
+                    System.out.print("Please choose your smoking preference for room " + (i + 1) + ": ");
                     smokingInput = Optional.of(in.nextInt());
                 }
             }
